@@ -1,51 +1,77 @@
-# LinkedIn Content AI Agent 🚀
+# 🚀 Automatización de Publicaciones: Trello + Make.com + IA + LinkedIn
 
-Agente automatizado diseñado para asistir en la estrategia de contenidos profesionales (*Build in Public*) en LinkedIn, enfocado en el sector del Desarrollo de Aplicaciones Web (DAW) y software de gestión empresarial (ERP/CRM).
-
-El sistema implementa una arquitectura híbrida *Human-in-the-Loop*: el agente procesa ideas en bruto, aplica lógica de redacción técnica/negocio y genera borradores programados, manteniendo siempre la supervisión y validación humana previa a la publicación.
+Sistema integral de gestión editorial, enriquecimiento visual y publicación automatizada hacia LinkedIn, orquestado mediante **Trello**, **Make.com** e **Inteligencia Artificial**.
 
 ---
 
-## 🎯 Objetivos del Proyecto
+## 📌 Flujo de Trabajo (Workflow)
+[ Trello: Ideas / Borradores ]
+│
+▼
+[ Trello: Borradores Aprobados ]
+│
+│ (Disparador Butler: Mar y Jue @ 10:30)
+▼
+[ Trello: Aprobados ] ──(Webhook)──► [ Make.com: Router Condicional ]
+│
+┌──────────────────────────────────────┼──────────────────────────────────────┐
+▼                                      ▼                                      ▼
+[ Rama 1: Texto + Imagen ]            [ Rama 2: Solo Texto ]                [ Rama 3: Generación IA ]
 
-- **Consistencia de marca profesional:** Mantener presencia activa en LinkedIn documentando el aprendizaje técnico en DAW sin sobrecarga operativa diaria.
-- **Enfoque en Lógica de Negocio:** Posicionar publicaciones que unan la operativa administrativa/empresarial con el desarrollo de software (Java, SQL, ERP/CRM).
-- **Control de Calidad (Anti-Clichés IA):** Aplicar reglas estrictas de procesamiento de lenguaje para evitar tono robótico, adjetivos inflados o estructuras repetitivas.
-- **Automatización Segura:** Integración mediante APIs oficiales en modo borrador (*Draft*), mitigando riesgos de publicación no supervisada.
+Descarga adjunto de Trello          * Extrae texto de la tarjeta          * Genera imagen vía API
 
----
+Sube multimedia a LinkedIn          * Publica post directo en LinkedIn    * Sube multimedia generada
 
-## 🛠️ Arquitectura y Tecnologías
+Publica post con imagen                                                   * Publica post en LinkedIn
+│                                      │                                      │
+└──────────────────────────────────────┴──────────────────────────────────────┘
+│
+▼
+[ Trello: Publicados ]
 
-El flujo de trabajo se compone de herramientas gratuitas integradas sin coste de infraestructura:
-
-| Módulo | Herramienta | Rol en el Sistema |
-| :--- | :--- | :--- |
-| **Canal de Entrada** | Telegram Bot API | Captura rápida de ideas, notas de voz o fragmentos de código desde el móvil. |
-| **Orquestador** | Make / n8n | Enrutamiento de datos, control de flujo y conexión entre servicios. |
-| **Motor de Lenguaje (LLM)** | Google Gemini API | Transformación de notas en bruto a publicaciones estructuradas según prompt maestro. |
-| **Planificador** | Buffer API | Gestión del calendario editorial y almacenamiento en bandeja de borradores (*Drafts*). |
-| **Supervisión** | Human-in-the-Loop | Revisión visual y aprobación final en 30 segundos previa a la publicación. |
-
----
-
-## 📋 Directrices de Redacción (Prompt Engineering)
-
-Para garantizar un tono auténtico, técnico y sin sesgo corporativo genérico, el agente opera bajo directrices estrictas:
-
-- **Prohibición de clichés de IA:** Restricción de términos comodín como *«ahondar»*, *«crucial»*, *«apasionante»*, *«tapiz»* o fórmulas como *«no es solo X, sino Y»*.
-- **Cero grandilocuencia:** Presentación de datos, errores y aprendizajes concretos de clase/proyectos; eliminación de adjetivos inflados.
-- **Verbos directos y prosa fluida:** Uso de lenguaje activo y eliminación de listas mecánicas con negrita en cada línea.
-- **Cierre constructivo:** Finalización con preguntas abiertas sobre arquitectura o procesos de negocio para fomentar el debate técnico.
 
 ---
 
-## 📂 Estructura del Repositorio
+## ⚙️ Componentes del Sistema
 
-```text
-├── README.md               # Documentación general y arquitectura del proyecto
-├── prompts/                # Directrices del sistema y plantillas de redacción
-│   └── linkedin_prompt.md  # System prompt y reglas de estilo
-├── blueprints/             # Exportación del flujo lógico (.json) para Make/n8n
-└── docs/                   # Diagramas de arquitectura y capturas del flujo# linkedin-ai-agent
-Agente automatizado para la creación y curación de contenidos en LinkedIn orientado a perfiles tecnológicos y software de gestión.
+### 1. Tablero Kanban (Trello)
+* **`Ideas / Borradores`:** Espacio de redacción y preparación inicial de temas.
+* **`Borradores Aprobados`:** Cola de contenido revisado listo para entrar al calendario.
+* **`Aprobados`:** Lista detonante. Al recibir una tarjeta, activa el Webhook de Make.
+* **`Publicados`:** Historial de publicaciones enviadas con éxito.
+
+### 2. Programador Automático (Trello Butler)
+* **Frecuencia:** Martes y Jueves a las 10:30 (Europe/Madrid).
+* **Acción:** Mueve 1 tarjeta aleatoria desde `Borradores Aprobados` a `Aprobados`.
+* **Regla Butler:**
+
+* every 1 weeks on tuesday, thursday at 10:30 am, move 1 randomly-selected cards from list "Borradores Aprobados" to list "Aprobados"
+* *(Si no hay tarjetas en la lista de borradores, la comprobación finaliza en vacío sin errores ni consumo de operaciones).*
+
+### 3. Orquestación y Enrutamiento (Make.com)
+* **Trigger:** Webhook instantáneo conectado a Trello.
+* **Router inteligente:**
+* **Ruta Multimedia:** Si la tarjeta tiene imagen adjunta, la procesa y publica en LinkedIn como post con imagen.
+* **Ruta de Texto plano:** Si no contiene imagen, formatea y publica el post en formato texto respetando saltos de línea.
+* **Ruta IA (Pollinations):** Si requiere recurso visual dinámico, genera la imagen automáticamente y la adjunta.
+* **Cierre de estado:** Mueve la tarjeta en Trello a `Publicados` tras la confirmación de la API de LinkedIn.
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+* **Trello:** Gestión de contenido y automatizaciones nativas Butler.
+* **Make.com:** Orquestación de webhooks, lógica condicional y llamadas API REST.
+* **LinkedIn API:** Publicación automatizada de estados y assets multimedia.
+* **Pollinations / IA:** Generación dinámica de recursos visuales.
+
+---
+
+## 📦 Instrucciones para Replicar el Proyecto
+
+1. Clona o descarga los archivos `.json` incluidos en este repositorio.
+2. En **Make.com**, crea un escenario nuevo y selecciona **Import Blueprint** desde el menú inferior (`...`).
+3. Conecta tus credenciales personales en los módulos correspondientes:
+ * Conexión de Trello (seleccionando tu Tablero y Listas).
+ * Conexión de LinkedIn (autorizando permisos de publicación).
+4. Configura en Trello la regla periódica de Butler con tus días y horarios preferidos.
