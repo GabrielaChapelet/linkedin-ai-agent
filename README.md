@@ -4,8 +4,10 @@ Sistema integral de gestión editorial, enriquecimiento visual y publicación au
 
 ---
 
-```text
+
 ## 📌 Flujo de Trabajo (Workflow)
+
+```text
 [ Trello: Ideas / Borradores ]
 │
 ▼
