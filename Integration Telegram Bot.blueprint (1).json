@@ -1,0 +1,576 @@
+{
+    "name": "Integration Telegram Bot",
+    "flow": [
+        {
+            "id": 1,
+            "module": "telegram:WatchUpdates",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 3908876
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "f7b91f85a5830539"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "My Telegram Bot Updates webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:telegramapi",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "gemini-ai:simpleTextPrompt",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "model": "gemini-2.5-flash",
+                "textPrompt": "Actúa como un redactor profesional de contenido. Toma la siguiente idea y redacta un post atractivo, estructurado y listo para publicar en LinkedIn: {{1.message.text}}. Sé conciso y responde en menos de 300 palabras (máximo 1700 caracteres).\r\n\r\nREGLAS OBLIGATORIAS:\r\n1. Redacta el post optimizado para LinkedIn (gancho inicial, desarrollo con valor, formato limpio y hashtags al final).\r\n2. En el cuerpo del post NUNCA menciones nada sobre fotos, ni enlaces, ni comandos.\r\n3. Si el mensaje del usuario incluye \"+foto\", lee las indicaciones visuales que pide, tradúcelas y adáptalas a un prompt fotográfico profesional en inglés (estilo hiperrealista, limpio, sin personas).\r\n4. Coloca ese prompt fotográfico al final de todo, en una línea separada con este formato exacto:\r\n---PROMPT---\r\naquí tu descripción fotográfica en inglés\r\n5. Si el mensaje NO incluye \"+foto\", termina el post tras los hashtags y NO pongas \"---PROMPT---\"."
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "9a9737e86c02c23a"
+                },
+                "restore": {
+                    "expect": {
+                        "model": {
+                            "label": "Gemini 2.5 FlashApplies smart reasoning to fast data tasks while ensuring quick response times"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "gemini-2.5-flash",
+                                "gemini-4-argon",
+                                "gemini-3.8-flash",
+                                "gemini-3.7-flash",
+                                "gemini-3.6-flash",
+                                "gemini-3.5-flash",
+                                "gemini-3.1-pro-preview",
+                                "gemini-3-flash-preview",
+                                "gemini-2.5-pro"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "textPrompt",
+                        "type": "text",
+                        "label": "Text prompt",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "telegram:SendReplyMessage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 11961996
+            },
+            "mapper": {
+                "text": "{{2.result}}",
+                "chatId": "{{1.message.chat.id}}",
+                "parseMode": "",
+                "replyMarkup": "",
+                "messageThreadId": "",
+                "replyToMessageId": "",
+                "replyMarkupAssembleType": "reply_markup_enter"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "83dd573ebac5517b"
+                },
+                "restore": {
+                    "expect": {
+                        "parseMode": {
+                            "label": "Empty"
+                        },
+                        "disableNotification": {
+                            "mode": "chose"
+                        },
+                        "replyMarkupAssembleType": {
+                            "label": "Enter the Reply Markup"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "telegram"
+                            },
+                            "label": "Gabriela's Telegram Bot connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:telegram",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "chatId",
+                        "type": "text",
+                        "label": "Chat ID",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    },
+                    {
+                        "name": "messageThreadId",
+                        "type": "number",
+                        "label": "Message Thread ID"
+                    },
+                    {
+                        "name": "parseMode",
+                        "type": "select",
+                        "label": "Parse Mode",
+                        "validate": {
+                            "enum": [
+                                "Markdown",
+                                "HTML"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "disableNotification",
+                        "type": "boolean",
+                        "label": "Disable Notifications"
+                    },
+                    {
+                        "name": "disableWebPagePreview",
+                        "type": "boolean",
+                        "label": "Disable Link Previews"
+                    },
+                    {
+                        "name": "replyToMessageId",
+                        "type": "number",
+                        "label": "Original Message ID"
+                    },
+                    {
+                        "name": "replyMarkupAssembleType",
+                        "type": "select",
+                        "label": "Enter/Assemble the Reply Markup Field",
+                        "validate": {
+                            "enum": [
+                                "reply_markup_enter",
+                                "reply_markup_assemble"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "replyMarkup",
+                        "type": "text",
+                        "label": "Reply Markup"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "trello:createCard",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 11963911
+            },
+            "mapper": {
+                "name": "{{1.message.text}}",
+                "list_id": "6ad0a71f5b37fcd258cae900",
+                "board_id": "6ad0a71f5b37fcd258cae8fa",
+                "description": "{{2.result}}",
+                "dueComplete": false,
+                "list_id_select_or_manual": "select"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 654,
+                    "y": -202
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "6ccdc06b6c39389c"
+                },
+                "restore": {
+                    "expect": {
+                        "list_id": {
+                            "label": "Borradores"
+                        },
+                        "board_id": {
+                            "label": "Contenido Redes (Espacio de trabajo de Trello)"
+                        },
+                        "position": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "labels_id": {
+                            "mode": "chose"
+                        },
+                        "members_id": {
+                            "mode": "chose"
+                        },
+                        "dueComplete": {
+                            "mode": "chose"
+                        },
+                        "select_or_manual_cardID": {
+                            "label": "Empty"
+                        },
+                        "list_id_select_or_manual": {
+                            "label": "Select"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "trello"
+                            },
+                            "label": "Mi Trello (mipromesaporcumplir7)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:trello",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "list_id_select_or_manual",
+                        "type": "select",
+                        "label": "Enter a List ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "manual",
+                                "select"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "position",
+                        "type": "select",
+                        "label": "Position",
+                        "validate": {
+                            "enum": [
+                                "top",
+                                "bottom"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "time": false,
+                        "type": "date",
+                        "label": "Start date"
+                    },
+                    {
+                        "name": "due_date",
+                        "time": true,
+                        "type": "date",
+                        "label": "Due date"
+                    },
+                    {
+                        "name": "dueComplete",
+                        "type": "boolean",
+                        "label": "Due complete",
+                        "required": true
+                    },
+                    {
+                        "name": "urlSource",
+                        "type": "url",
+                        "label": "File URL"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "text",
+                        "label": "File name"
+                    },
+                    {
+                        "name": "filedata",
+                        "type": "buffer",
+                        "label": "File data"
+                    },
+                    {
+                        "name": "select_or_manual_cardID",
+                        "type": "select",
+                        "label": "Copy card",
+                        "validate": {
+                            "enum": [
+                                "manually",
+                                "select"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "board_id",
+                        "type": "select",
+                        "label": "Board",
+                        "required": true
+                    },
+                    {
+                        "name": "list_id",
+                        "type": "select",
+                        "label": "List",
+                        "required": true
+                    },
+                    {
+                        "name": "labels_id",
+                        "type": "select",
+                        "label": "Labels",
+                        "multiple": true
+                    },
+                    {
+                        "name": "members_id",
+                        "type": "select",
+                        "label": "Members",
+                        "multiple": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "parameters": {
+                "else": 1
+            },
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 883,
+                    "y": 29
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 7,
+                            "module": "trello:addAnAttachment",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 11963911
+                            },
+                            "filter": {
+                                "name": "Viene con foto",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.message.text}}",
+                                            "b": "+foto",
+                                            "o": "text:contain:ci"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "url": "https://image.pollinations.ai/prompt/split%20screen%20office%20desk%20computer%20code%20and%20accounting%20ledger%20books%20realistic%20cinematic?width=1200&height=630&nologo=true",
+                                "name": "imagen-linkedin.jpg",
+                                "card_id": "{{4.id}}",
+                                "attachment_type": "attachment_url",
+                                "select_or_manual": "manual"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1183,
+                                    "y": -271
+                                },
+                                "setupValidation": {
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    },
+                                    "version": 1,
+                                    "configuration": "5a0c9beed677ad08"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "attachment_type": {
+                                            "label": "URL"
+                                        },
+                                        "select_or_manual": {
+                                            "label": "Enter manually"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "trello"
+                                            },
+                                            "label": "Mi Trello (mipromesaporcumplir7)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:trello",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select_or_manual",
+                                        "type": "select",
+                                        "label": "Enter card ID",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "manual",
+                                                "select"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "attachment_type",
+                                        "type": "select",
+                                        "label": "Attachment type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "attachment_file",
+                                                "attachment_url"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "card_id",
+                                        "type": "text",
+                                        "label": "Card ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Attachment name"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 8,
+                            "module": "placeholder:Placeholder",
+                            "filter": {
+                                "name": "Sin foto",
+                                "conditions": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1183,
+                                    "y": 29
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}
