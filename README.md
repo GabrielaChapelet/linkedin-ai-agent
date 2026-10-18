@@ -4,6 +4,7 @@ Sistema integral de gestión editorial, enriquecimiento visual y publicación au
 
 ---
 
+```text
 ## 📌 Flujo de Trabajo (Workflow)
 [ Trello: Ideas / Borradores ]
 │
@@ -29,8 +30,18 @@ Publica post con imagen                                                   * Publ
 ▼
 [ Trello: Publicados ]
 
-
+```
 ---
+
+### 📸 Flujos Implementados
+
+#### Escenario Make: Trello a LinkedIn
+![Integración Trello LinkedIn](Integracion%20Trello_LinkedIn.png)
+
+#### Escenario Make: Bot de Telegram
+![Integración Telegram Bot](Integraci%C3%B3n%20Telegram_Bot.png)
+
+
 
 ## ⚙️ Componentes del Sistema
 
